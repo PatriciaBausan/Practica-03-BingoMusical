@@ -7,13 +7,11 @@
       Los 10 mejores jugadores de Bingo Musical.
     </p>
 
-    <!-- Mostramos la tabla si hay jugadores -->
     <RankingTable
       v-if="ranking.length > 0"
       :ranking="ranking"
     />
 
-    <!-- Mensaje si todavía no hay resultados -->
     <p v-else class="empty">
       Todavía no hay jugadores en el ranking. ¡Sé el primero!
     </p>

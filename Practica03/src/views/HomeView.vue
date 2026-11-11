@@ -7,7 +7,6 @@ const game = useGameStore();
 
 <template>
   <section class="home">
-    <!-- CONTENIDO DE LA IZQUIERDA -->
     <div class="home-content">
       <div class="music-icon">🎧</div>
 
@@ -52,7 +51,6 @@ const game = useGameStore();
   background: linear-gradient(135deg, #090914, #17102c, #090914);
 }
 
-/* CONTENIDO DE LA IZQUIERDA */
 .home-content {
   display: flex;
   flex-direction: column;
@@ -93,7 +91,6 @@ const game = useGameStore();
   line-height: 1.7;
 }
 
-/* BOTONES */
 .buttons {
   display: flex;
   justify-content: flex-start;
@@ -130,7 +127,6 @@ const game = useGameStore();
   box-shadow: 0 0 25px #a855f7;
 }
 
-/* IMAGEN DE LA DERECHA */
 .home-image {
   width: 100%;
   display: flex;
@@ -154,7 +150,6 @@ const game = useGameStore();
   box-shadow: 0 0 40px rgba(168, 85, 247, 0.45);
 }
 
-/* TABLETS */
 @media (max-width: 800px) {
   .home {
     grid-template-columns: 1fr;
@@ -184,7 +179,6 @@ const game = useGameStore();
   }
 }
 
-/* MÓVILES */
 @media (max-width: 600px) {
   .buttons {
     flex-direction: column;

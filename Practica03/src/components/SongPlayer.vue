@@ -21,11 +21,9 @@ function reproducirCancion() {
     onload: () => {
       const duracion = audio.duration()
 
-      // No reproducir los últimos 30 segundos
       const inicioMinimo = 20
       const inicioMaximo = Math.max(0, duracion - 30 - 5)
 
-      // Elegir un fragmento aleatorio
       const inicio =
         inicioMaximo > inicioMinimo
           ? inicioMinimo + Math.random() * (inicioMaximo - inicioMinimo)
@@ -35,7 +33,6 @@ function reproducirCancion() {
 
       audio.seek(inicio, id)
 
-      // Reproducir solamente 5 segundos
       stopTimer = setTimeout(() => {
         if (audio) {
           audio.stop(id)

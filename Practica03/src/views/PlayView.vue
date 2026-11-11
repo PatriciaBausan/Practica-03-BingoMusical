@@ -2,7 +2,6 @@
 <template>
   <section class="play">
 
-    <!-- Información arriba del todo -->
     <div class="playerInfo">
       <h2>¡Vamos a jugar, {{ game.playerName }}!</h2>
 
@@ -15,12 +14,10 @@
       </div>
     </div>
 
-    <!-- Cartón a la izquierda -->
     <div class="bingo-container">
       <BingoCard :bingo-cards="bingoCards" />
     </div>
 
-    <!-- Canción y respuestas a la derecha -->
     <div class="game-container">
       <MusicCard
         v-if="game.songs.length > 0 && !finished"
@@ -32,7 +29,6 @@
       />
     </div>
 
-    <!-- Mensaje de resultado abajo en el centro -->
     <div class="feedback-container">
       <GameFeedback
         v-if="feedbackMessage"
@@ -68,28 +64,22 @@ import { useGameStore } from '../stores/game'
 const game = useGameStore()
 const router = useRouter()
 
-// Variables para controlar las respuestas
 const selectedAnswer = ref(null)
 const answered = ref(false)
 const finished = ref(false)
 
-// Variables para mostrar los mensajes
 const feedbackMessage = ref('')
 const feedbackType = ref('')
 
-// Tiempo para responder
 const tiempoRestante = ref(10)
 
-// Estado de las 10 casillas del cartón
 const bingoCards = ref([])
 
-// Variables para controlar el audio y los temporizadores
 let audio = null
 let stopTimer = null
 let countdownTimer = null
 
 
-// Al entrar en la pantalla, seleccionamos 10 canciones aleatorias
 onMounted(() => {
   const cancionesMezcladas = [...songs]
 
@@ -103,17 +93,14 @@ onMounted(() => {
 })
 
 
-// Reproducimos un fragmento aleatorio de la canción
 function reproducirCancion() {
 
-  // Paramos y eliminamos el audio anterior
   if (audio) {
     audio.stop()
     audio.unload()
     audio = null
   }
 
-  // Limpiamos los temporizadores anteriores
   limpiarTemporizadores()
 
   const cancionActual = game.songs[game.currentQuestion]
@@ -128,13 +115,10 @@ function reproducirCancion() {
 
       const duracion = audio.duration()
 
-      // Si dura 25 segundos o más, empezamos como mínimo en el segundo 20
       const inicioMinimo = duracion >= 25 ? 20 : Math.max(0, duracion - 5)
 
-      // Evitamos que el fragmento supere el final de la canción
       const inicioMaximo = Math.max(inicioMinimo, duracion - 5)
 
-      // Elegimos un segundo aleatorio
       const inicio =
         inicioMinimo + Math.random() * (inicioMaximo - inicioMinimo)
 
@@ -142,7 +126,6 @@ function reproducirCancion() {
 
       audio.seek(inicio, id)
 
-      // Reproducimos solamente 5 segundos
       stopTimer = setTimeout(() => {
 
         if (audio) {
@@ -151,7 +134,6 @@ function reproducirCancion() {
 
         stopTimer = null
 
-        // Cuando termina la música, empieza el tiempo para responder
         iniciarTiempo()
 
       }, 5000)
@@ -164,7 +146,6 @@ function reproducirCancion() {
 }
 
 
-// Iniciamos los 10 segundos para responder
 function iniciarTiempo() {
 
   tiempoRestante.value = 10
@@ -181,8 +162,6 @@ function iniciarTiempo() {
   }, 1000)
 }
 
-
-// Limpiamos los temporizadores
 function limpiarTemporizadores() {
 
   if (stopTimer) {
@@ -197,7 +176,6 @@ function limpiarTemporizadores() {
 }
 
 
-// Comprobamos la respuesta seleccionada
 function comprobarRespuesta(index) {
 
   if (answered.value || finished.value) return
@@ -215,7 +193,6 @@ function comprobarRespuesta(index) {
 
   if (index === cancionActual.correct) {
 
-    // Respuesta correcta: sumamos 10 puntos
     game.score += 10
     game.correctAnswers++
 
@@ -226,7 +203,6 @@ function comprobarRespuesta(index) {
 
   } else {
 
-    // Respuesta incorrecta: restamos 5 puntos
     game.score -= 5
     game.incorrectAnswers++
 
@@ -239,7 +215,6 @@ function comprobarRespuesta(index) {
 }
 
 
-// Cuando se acaba el tiempo sin responder
 function tiempoAgotado() {
 
   if (answered.value || finished.value) return
@@ -255,7 +230,6 @@ function tiempoAgotado() {
 }
 
 
-// Guardamos el resultado en el ranking
 function guardarResultado() {
 
   const porcentaje = game.correctAnswers * 10
@@ -273,22 +247,18 @@ function guardarResultado() {
 
   ranking.push(resultado)
 
-  // Ordenamos de mayor a menor puntuación
   ranking.sort((a, b) => {
     return b.score - a.score
   })
 
-  // Guardamos solamente los 10 mejores
   ranking = ranking.slice(0, 10)
 
   localStorage.setItem('ranking', JSON.stringify(ranking))
 }
 
 
-// Pasamos a la siguiente pregunta
 function siguientePregunta() {
 
-  // Si estamos en la última pregunta, guardamos el resultado
   if (game.currentQuestion === 9) {
 
     finished.value = true
@@ -308,7 +278,6 @@ function siguientePregunta() {
     return
   }
 
-  // Pasamos a la siguiente canción
   game.currentQuestion++
 
   selectedAnswer.value = null
@@ -322,8 +291,6 @@ function siguientePregunta() {
   reproducirCancion()
 }
 
-
-// Limpiamos el audio y los temporizadores al salir de la pantalla
 onBeforeUnmount(() => {
 
   limpiarTemporizadores()
@@ -354,7 +321,6 @@ onBeforeUnmount(() => {
   align-items: stretch;
 }
 
-/* INFORMACIÓN ARRIBA */
 .playerInfo {
   grid-column: 1 / -1;
   grid-row: 1;
@@ -394,7 +360,6 @@ onBeforeUnmount(() => {
   font-weight: bold;
 }
 
-/* CARTÓN A LA IZQUIERDA */
 .bingo-container {
   grid-column: 1;
   grid-row: 2;
@@ -411,7 +376,6 @@ onBeforeUnmount(() => {
   min-height: 550px;
 }
 
-/* PREGUNTAS A LA DERECHA */
 .game-container {
   grid-column: 2;
   grid-row: 2;
@@ -428,7 +392,6 @@ onBeforeUnmount(() => {
   margin: 0;
 }
 
-/* MENSAJE ABAJO EN EL CENTRO */
 .feedback-container {
   grid-column: 1 / -1;
   grid-row: 3;
@@ -441,7 +404,6 @@ onBeforeUnmount(() => {
   text-align: center;
 }
 
-/* BOTÓN SIGUIENTE */
 .nextButton {
   padding: 12px 25px;
   border: none;
@@ -460,7 +422,6 @@ onBeforeUnmount(() => {
   box-shadow: 0 0 20px #a855f7;
 }
 
-/* TABLETS Y MÓVILES */
 @media (max-width: 800px) {
   .play {
     grid-template-columns: 1fr;
@@ -497,6 +458,5 @@ onBeforeUnmount(() => {
     grid-row: 4;
   }
 }
-
 
 </style>

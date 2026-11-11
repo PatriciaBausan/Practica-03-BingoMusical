@@ -3,7 +3,6 @@ import { ref } from 'vue'
 
 const name = ref('')
 
-// Creamos el evento para enviarlo al padre
 const emit = defineEmits(['iniciar'])
 
 function iniciarJuego() {
@@ -33,7 +32,6 @@ function iniciarJuego() {
 
 <style scoped>
 
-/* FORMULARIO */
 .player-form {
   display: flex;
   flex-direction: column;
@@ -44,14 +42,12 @@ function iniciarJuego() {
   z-index: 1;
 }
 
-/* ETIQUETA DEL INPUT */
 .player-form label {
   font-size: 1.1rem;
   font-weight: 600;
   color: #e9d5ff;
 }
 
-/* CAMPO DE TEXTO */
 .player-form input {
   width: 100%;
   box-sizing: border-box;
@@ -71,14 +67,12 @@ function iniciarJuego() {
   color: rgba(233, 213, 255, 0.4);
 }
 
-/* EFECTO AL SELECCIONAR EL INPUT */
 .player-form input:focus {
   border-color: #00f2fe;
   box-shadow: 0 0 20px rgba(0, 242, 254, 0.35);
   background: rgba(255, 255, 255, 0.1);
 }
 
-/* BOTÓN JUGAR */
 .play {
   padding: 1rem 3rem;
   font-size: 1.3rem;
@@ -93,13 +87,11 @@ function iniciarJuego() {
   margin-top: 0.5rem;
 }
 
-/* EFECTO HOVER DEL BOTÓN */
 .play:hover {
   transform: scale(1.05);
   box-shadow: 0 0 30px #a855f7;
 }
 
-/* ADAPTACIÓN A MÓVILES */
 @media (max-width: 600px) {
   .player-form {
     max-width: 100%;

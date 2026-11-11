@@ -83,7 +83,6 @@ defineProps(['bingoCards'])
   transition: all 0.3s ease;
 }
 
-/* Respuesta correcta */
 .bingo-cell.correct {
   background: linear-gradient(145deg, #4ade80, #16a34a);
   color: white;
@@ -91,7 +90,6 @@ defineProps(['bingoCards'])
   box-shadow: 0 0 15px rgba(34, 197, 94, 0.5);
 }
 
-/* Respuesta incorrecta */
 .bingo-cell.incorrect {
   background: linear-gradient(145deg, #f87171, #dc2626);
   color: white;
@@ -99,7 +97,6 @@ defineProps(['bingoCards'])
   box-shadow: 0 0 15px rgba(220, 38, 38, 0.4);
 }
 
-/* Adaptación a móviles */
 @media (max-width: 600px) {
   .bingoCard {
     min-height: 400px;

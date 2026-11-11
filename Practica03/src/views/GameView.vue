@@ -101,7 +101,6 @@ function comenzarJuego(nombre) {
   margin: 0;
 }
 
-/* Las dos tarjetas tendrán el mismo tamaño */
 .rules,
 .player-card {
   width: 100%;
@@ -117,7 +116,6 @@ function comenzarJuego(nombre) {
   z-index: 1;
 }
 
-/* Tarjeta de reglas a la izquierda */
 .rules {
   grid-column: 1;
   grid-row: 3;
@@ -150,7 +148,6 @@ function comenzarJuego(nombre) {
   color: #2e7ddf;
 }
 
-/* Tarjeta de bienvenida a la derecha */
 .player-card {
   grid-column: 2;
   grid-row: 3;
@@ -169,7 +166,6 @@ function comenzarJuego(nombre) {
   margin-bottom: 1.5rem;
 }
 
-/* Botón de jugar */
 .play {
   padding: 1rem 3rem;
   font-size: 1.3rem;
@@ -188,8 +184,6 @@ function comenzarJuego(nombre) {
   transform: scale(1.05);
   box-shadow: 0 0 30px #a855f7;
 }
-
-/* Adaptación para móviles */
 @media (max-width: 700px) {
   .home {
     display: flex;

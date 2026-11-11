@@ -47,7 +47,6 @@
 
 <script setup>
 
-// Recibimos los datos del componente padre
 const props = defineProps({
   song: {
     type: Object,
@@ -70,10 +69,8 @@ const props = defineProps({
   }
 })
 
-// Creamos el evento para enviar la respuesta al padre
 const emit = defineEmits(['select-answer'])
 
-// Enviamos la respuesta seleccionada
 function seleccionarRespuesta(index) {
   if (props.answered) {
     return
@@ -82,7 +79,6 @@ function seleccionarRespuesta(index) {
   emit('select-answer', index)
 }
 
-// Comprobamos qué color debe tener cada respuesta
 function estadoRespuesta(index) {
 
   if (!props.answered) {
@@ -145,7 +141,6 @@ function estadoRespuesta(index) {
   margin-bottom: 2rem;
 }
 
-/* RESPUESTAS UNA DEBAJO DE OTRA */
 .answers {
   display: grid;
   grid-template-columns: 1fr;
