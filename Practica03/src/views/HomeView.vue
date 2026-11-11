@@ -29,7 +29,7 @@ const game = useGameStore();
     </div>
 
     <div class="home-image">
-      <img src="/images/Fondo.png" alt="Bingo Musical" />
+      <img src="/images/Fondo.jpg" alt="Bingo Musical" />
     </div>
   </section>
 </template>
