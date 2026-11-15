@@ -1,25 +1,19 @@
-
-<script setup>
-defineProps(['bingoCards'])
-</script>
-
 <template>
   <div class="bingoCard">
     <h2>Mi cartón</h2>
     <p class="subtitle">BINGO MUSICAL</p>
 
     <div class="bingo-grid">
-      <div
-        v-for="(estado, index) in bingoCards"
-        :key="index"
-        class="bingo-cell"
-        :class="estado"
-      >
+      <div v-for="(estado, index) in bingoCards" :key="index" class="bingo-cell" :class="estado">
         {{ index + 1 }}
       </div>
     </div>
   </div>
 </template>
+
+<script setup>
+defineProps(["bingoCards"]);
+</script>
 
 <style scoped>
 .bingoCard {

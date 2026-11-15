@@ -1,24 +1,9 @@
-
-<script setup>
-import { useGameStore } from '../stores/game'
-import PlayerForm from '../components/PlayerForm.vue'
-import { useRouter } from 'vue-router'
-
-const game = useGameStore()
-const router = useRouter()
-
-function comenzarJuego(nombre) {
-  game.startGame(nombre)
-  router.push('/play')
-}
-</script>
-
 <template>
   <section class="home">
     <h1>Bingo Musical</h1>
 
     <p class="subtitle">
-      Escucha 5 segundos de una canción y adivina cuál es. ¡Completa tu cartón!
+      Escucha 5 segundos de una canción y adivina cuál es. Para poder completar tu cartón.
     </p>
 
     <div class="rules">
@@ -30,26 +15,39 @@ function comenzarJuego(nombre) {
         <li>Acierto: <strong>+10 puntos</strong> y casilla verde en tu cartón.</li>
         <li>Fallo: <strong>−5 puntos</strong> y casilla roja.</li>
         <li>Si no contestas a tiempo: <strong>0 puntos</strong> y casilla gris.</li>
-        <li>Completa una fila para cantar <strong>¡LÍNEA!</strong> o las 10 para <strong>¡BINGO!</strong></li>
+        <li>
+          Completa una fila para cantar <strong>¡LÍNEA!</strong> o las 10 para
+          <strong>¡BINGO!</strong>
+        </li>
         <li>Los 10 mejores jugadores entran en el ranking.</li>
       </ul>
     </div>
 
     <div class="player-card">
-      <h2>¡Prepárate para jugar!</h2>
+      <h2>Prepárate para jugar</h2>
 
-      <p class="description">
-        Escribe tu nombre para poderte unir a este bingo musical.
-      </p>
+      <p class="description">Escribe tu nombre para poderte unir a este bingo musical.</p>
 
       <PlayerForm @iniciar="comenzarJuego" />
     </div>
-
   </section>
 </template>
 
-<style scoped>
+<script setup>
+import { useGameStore } from "../stores/game";
+import PlayerForm from "../components/PlayerForm.vue";
+import { useRouter } from "vue-router";
 
+const game = useGameStore();
+const router = useRouter();
+
+function comenzarJuego(nombre) {
+  game.startGame(nombre);
+  router.push("/play");
+}
+</script>
+
+<style scoped>
 .home {
   position: relative;
   width: 100%;
@@ -86,7 +84,9 @@ function comenzarJuego(nombre) {
   font-size: 3.2rem;
   font-weight: 800;
   color: #c084fc;
-  text-shadow: 0 0 10px #a855f7, 0 0 25px #7e22ce;
+  text-shadow:
+    0 0 10px #a855f7,
+    0 0 25px #7e22ce;
   margin: 0;
   z-index: 1;
 }

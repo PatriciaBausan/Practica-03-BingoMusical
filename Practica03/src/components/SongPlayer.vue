@@ -1,78 +1,75 @@
+<template>
+  <div class="song-player">
+    <p>Escucha atentamente el fragmento musical.</p>
+  </div>
+</template>
 
 <script setup>
-import { Howl } from 'howler'
+import { Howl } from "howler";
 
-const props = defineProps(['song'])
+const props = defineProps(["song"]);
 
-const emit = defineEmits(['finished', 'error'])
+const emit = defineEmits(["finished", "error"]);
 
-let audio = null
-let stopTimer = null
+let audio = null;
+let stopTimer = null;
 
 function reproducirCancion() {
-  detenerCancion()
+  detenerCancion();
 
-  if (!props.song) return
+  if (!props.song) return;
 
   audio = new Howl({
     src: [props.song.file],
     html5: true,
 
     onload: () => {
-      const duracion = audio.duration()
+      const duracion = audio.duration();
 
-      const inicioMinimo = 20
-      const inicioMaximo = Math.max(0, duracion - 30 - 5)
+      const inicioMinimo = 20;
+      const inicioMaximo = Math.max(0, duracion - 30 - 5);
 
       const inicio =
         inicioMaximo > inicioMinimo
           ? inicioMinimo + Math.random() * (inicioMaximo - inicioMinimo)
-          : 0
+          : 0;
 
-      const id = audio.play()
-
-      audio.seek(inicio, id)
-
+      const id = audio.play();
+      
+      audio.seek(inicio, id);
       stopTimer = setTimeout(() => {
         if (audio) {
-          audio.stop(id)
+          audio.stop(id);
         }
-
-        stopTimer = null
-        emit('finished')
-      }, 5000)
+        stopTimer = null;
+        emit("finished");
+      }, 5000);
     },
 
     onloaderror: () => {
-      emit('error')
-    }
-  })
+      emit("error");
+    },
+  });
 }
 
 function detenerCancion() {
   if (stopTimer) {
-    clearTimeout(stopTimer)
-    stopTimer = null
+    clearTimeout(stopTimer);
+    stopTimer = null;
   }
 
   if (audio) {
-    audio.stop()
-    audio.unload()
-    audio = null
+    audio.stop();
+    audio.unload();
+    audio = null;
   }
 }
 
 defineExpose({
   reproducirCancion,
-  detenerCancion
-})
+  detenerCancion,
+});
 </script>
-
-<template>
-  <div class="song-player">
-    <p>Escucha atentamente el fragmento musical.</p>
-  </div>
-</template>
 
 <style scoped>
 .song-player {

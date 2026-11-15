@@ -1,37 +1,25 @@
-<script setup>
-import { ref } from 'vue'
-
-const name = ref('')
-
-const emit = defineEmits(['iniciar'])
-
-function iniciarJuego() {
-  emit('iniciar', name.value)
-}
-</script>
-
 <template>
   <form class="player-form" @submit.prevent="iniciarJuego">
-
     <label for="name">¿Cómo te llamas?</label>
 
-    <input
-      id="name"
-      v-model="name"
-      maxlength="20"
-      placeholder="Tu nombre"
-      required
-    />
+    <input id="name" v-model="name" maxlength="20" placeholder="Tu nombre" required />
 
-    <button type="submit" class="play">
-      ¡Jugar!
-    </button>
-
+    <button type="submit" class="play">Jugar</button>
   </form>
 </template>
 
-<style scoped>
+<script setup>
+import { ref } from "vue";
 
+const name = ref("");
+const emit = defineEmits(["iniciar"]);
+
+function iniciarJuego() {
+  emit("iniciar", name.value);
+}
+</script>
+
+<style scoped>
 .player-form {
   display: flex;
   flex-direction: column;
@@ -103,5 +91,4 @@ function iniciarJuego() {
     font-size: 1.1rem;
   }
 }
-
 </style>

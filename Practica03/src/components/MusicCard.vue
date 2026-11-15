@@ -1,106 +1,82 @@
-
 <template>
   <section class="music-card">
-
     <div class="question-header">
       <span>PREGUNTA {{ questionNumber }} DE 10</span>
     </div>
 
     <h2>{{ song.question }}</h2>
 
-    <p class="instruction">
-      Escucha la canción y selecciona la respuesta correcta.
-    </p>
+    <p class="instruction">Escucha la canción y selecciona la respuesta correcta.</p>
 
     <div class="answers">
       <button
         v-for="(answer, index) in song.answers"
         :key="index"
         class="answer"
-        :class="[
-          estadoRespuesta(index),
-          { selected: selectedAnswer === index && !answered }
-        ]"
+        :class="[estadoRespuesta(index), { selected: selectedAnswer === index && !answered }]"
         :disabled="answered"
         @click="seleccionarRespuesta(index)"
       >
-        <span class="letter">
-          {{ String.fromCharCode(65 + index) }}
-        </span>
-
-        <span class="answer-text">
-          {{ answer }}
-        </span>
-
-        <span v-if="answered && index === song.correct">
-          ✓
-        </span>
-
-        <span v-else-if="answered && index === selectedAnswer">
-          ✕
-        </span>
+        <span class="letter">{{ String.fromCharCode(65 + index) }} </span>
+        <span class="answer-text">{{ answer }} </span>
+        <span v-if="answered && index === song.correct"> ✓ </span>
+        <span v-else-if="answered && index === selectedAnswer"> ✕ </span>
       </button>
     </div>
-
   </section>
 </template>
 
 <script setup>
-
 const props = defineProps({
   song: {
     type: Object,
-    required: true
+    required: true,
   },
 
   questionNumber: {
     type: Number,
-    required: true
+    required: true,
   },
 
   selectedAnswer: {
     type: Number,
-    default: null
+    default: null,
   },
 
   answered: {
     type: Boolean,
-    default: false
-  }
-})
+    default: false,
+  },
+});
 
-const emit = defineEmits(['select-answer'])
+const emit = defineEmits(["select-answer"]);
 
 function seleccionarRespuesta(index) {
   if (props.answered) {
-    return
+    return;
   }
 
-  emit('select-answer', index)
+  emit("select-answer", index);
 }
 
 function estadoRespuesta(index) {
-
   if (!props.answered) {
-    return ''
+    return "";
   }
 
   if (index === props.song.correct) {
-    return 'correct'
+    return "correct";
   }
 
   if (index === props.selectedAnswer) {
-    return 'incorrect'
+    return "incorrect";
   }
 
-  return ''
+  return "";
 }
-
 </script>
 
 <style scoped>
-
-
 .music-card {
   width: 100%;
   max-width: none;
@@ -213,5 +189,4 @@ function estadoRespuesta(index) {
     font-size: 1.5rem;
   }
 }
-
 </style>

@@ -1,22 +1,16 @@
-
 <template>
   <section class="play">
-
     <div class="playerInfo">
-      <h2>¡Vamos a jugar, {{ game.playerName }}!</h2>
+      <h2>Vamos a jugar, {{ game.playerName }}!</h2>
 
       <div class="player-stats">
         <p>Puntos: {{ game.score }}</p>
         <p>Pregunta {{ game.currentQuestion + 1 }} de 10</p>
-        <p v-if="!answered && !finished">
-          Tiempo: {{ tiempoRestante }} segundos
-        </p>
+        <p v-if="!answered && !finished">Tiempo: {{ tiempoRestante }} segundos</p>
       </div>
     </div>
 
-    <div class="bingo-container">
-      <BingoCard :bingo-cards="bingoCards" />
-    </div>
+    <div class="bingo-container"> <BingoCard :bingo-cards="bingoCards" /></div>
 
     <div class="game-container">
       <MusicCard
@@ -30,209 +24,177 @@
     </div>
 
     <div class="feedback-container">
-      <GameFeedback
-        v-if="feedbackMessage"
-        :type="feedbackType"
-        :message="feedbackMessage"
-      />
+      <GameFeedback v-if="feedbackMessage" :type="feedbackType" :message="feedbackMessage" />
 
-      <button
-        v-if="answered && !finished"
-        class="nextButton"
-        @click="siguientePregunta"
-      >
-        {{ game.currentQuestion === 9 ? 'Ver resultado' : 'Siguiente pregunta' }}
+      <button v-if="answered && !finished" class="nextButton" @click="siguientePregunta">
+        {{ game.currentQuestion === 9 ? "Ver resultado" : "Siguiente pregunta" }}
       </button>
     </div>
-
   </section>
 </template>
 
-
 <script setup>
-import { ref, onMounted, onBeforeUnmount } from 'vue'
-import { useRouter } from 'vue-router'
-import { Howl } from 'howler'
+import { ref, onMounted, onBeforeUnmount } from "vue";
+import { useRouter } from "vue-router";
+import { Howl } from "howler";
 
-import MusicCard from '../components/MusicCard.vue'
-import BingoCard from '../components/BingoCard.vue'
-import GameFeedback from '../components/GameFeedback.vue'
+import MusicCard from "../components/MusicCard.vue";
+import BingoCard from "../components/BingoCard.vue";
+import GameFeedback from "../components/GameFeedback.vue";
 
-import { songs } from '../data/songs'
-import { useGameStore } from '../stores/game'
+import { songs } from "../data/songs";
+import { useGameStore } from "../stores/game";
 
-const game = useGameStore()
-const router = useRouter()
+const game = useGameStore();
+const router = useRouter();
 
-const selectedAnswer = ref(null)
-const answered = ref(false)
-const finished = ref(false)
+const selectedAnswer = ref(null);
+const answered = ref(false);
+const finished = ref(false);
 
-const feedbackMessage = ref('')
-const feedbackType = ref('')
+const feedbackMessage = ref("");
+const feedbackType = ref("");
 
-const tiempoRestante = ref(10)
+const tiempoRestante = ref(10);
 
-const bingoCards = ref([])
+const bingoCards = ref([]);
 
-let audio = null
-let stopTimer = null
-let countdownTimer = null
-
+let audio = null;
+let stopTimer = null;
+let countdownTimer = null;
 
 onMounted(() => {
-  const cancionesMezcladas = [...songs]
+  const cancionesMezcladas = [...songs];
 
-  cancionesMezcladas.sort(() => Math.random() - 0.5)
+  cancionesMezcladas.sort(() => Math.random() - 0.5);
 
-  game.songs = cancionesMezcladas.slice(0, 10)
+  game.songs = cancionesMezcladas.slice(0, 10);
 
-  bingoCards.value = Array(10).fill('pending')
+  bingoCards.value = Array(10).fill("pending");
 
-  reproducirCancion()
-})
-
+  reproducirCancion();
+});
 
 function reproducirCancion() {
-
   if (audio) {
-    audio.stop()
-    audio.unload()
-    audio = null
+    audio.stop();
+    audio.unload();
+    audio = null;
   }
 
-  limpiarTemporizadores()
+  limpiarTemporizadores();
 
-  const cancionActual = game.songs[game.currentQuestion]
+  const cancionActual = game.songs[game.currentQuestion];
 
-  if (!cancionActual) return
+  if (!cancionActual) return;
 
   audio = new Howl({
     src: [cancionActual.file],
     html5: true,
 
     onload: () => {
+      const duracion = audio.duration();
 
-      const duracion = audio.duration()
+      const inicioMinimo = duracion >= 25 ? 20 : Math.max(0, duracion - 5);
 
-      const inicioMinimo = duracion >= 25 ? 20 : Math.max(0, duracion - 5)
+      const inicioMaximo = Math.max(inicioMinimo, duracion - 5);
 
-      const inicioMaximo = Math.max(inicioMinimo, duracion - 5)
+      const inicio = inicioMinimo + Math.random() * (inicioMaximo - inicioMinimo);
 
-      const inicio =
-        inicioMinimo + Math.random() * (inicioMaximo - inicioMinimo)
+      const id = audio.play();
 
-      const id = audio.play()
-
-      audio.seek(inicio, id)
+      audio.seek(inicio, id);
 
       stopTimer = setTimeout(() => {
-
         if (audio) {
-          audio.stop(id)
+          audio.stop(id);
         }
 
-        stopTimer = null
+        stopTimer = null;
 
-        iniciarTiempo()
-
-      }, 5000)
+        iniciarTiempo();
+      }, 5000);
     },
 
     onloaderror: () => {
-      console.log('Error al cargar la canción:', cancionActual.file)
-    }
-  })
+      console.log("Error al cargar la canción:", cancionActual.file);
+    },
+  });
 }
 
-
 function iniciarTiempo() {
-
-  tiempoRestante.value = 10
+  tiempoRestante.value = 10;
 
   countdownTimer = setInterval(() => {
-
-    tiempoRestante.value--
+    tiempoRestante.value--;
 
     if (tiempoRestante.value <= 0) {
-      limpiarTemporizadores()
-      tiempoAgotado()
+      limpiarTemporizadores();
+      tiempoAgotado();
     }
-
-  }, 1000)
+  }, 1000);
 }
 
 function limpiarTemporizadores() {
-
   if (stopTimer) {
-    clearTimeout(stopTimer)
-    stopTimer = null
+    clearTimeout(stopTimer);
+    stopTimer = null;
   }
 
   if (countdownTimer) {
-    clearInterval(countdownTimer)
-    countdownTimer = null
+    clearInterval(countdownTimer);
+    countdownTimer = null;
   }
 }
-
 
 function comprobarRespuesta(index) {
+  if (answered.value || finished.value) return;
 
-  if (answered.value || finished.value) return
-
-  limpiarTemporizadores()
+  limpiarTemporizadores();
 
   if (audio) {
-    audio.stop()
+    audio.stop();
   }
 
-  selectedAnswer.value = index
-  answered.value = true
+  selectedAnswer.value = index;
+  answered.value = true;
 
-  const cancionActual = game.songs[game.currentQuestion]
+  const cancionActual = game.songs[game.currentQuestion];
 
   if (index === cancionActual.correct) {
+    game.score += 10;
+    game.correctAnswers++;
 
-    game.score += 10
-    game.correctAnswers++
+    bingoCards.value[game.currentQuestion] = "correct";
 
-    bingoCards.value[game.currentQuestion] = 'correct'
-
-    feedbackType.value = 'correct'
-    feedbackMessage.value = '¡Correcto! Has conseguido 10 puntos.'
-
+    feedbackType.value = "correct";
+    feedbackMessage.value = "¡Correcto! Has conseguido 10 puntos.";
   } else {
+    game.score -= 5;
+    game.incorrectAnswers++;
 
-    game.score -= 5
-    game.incorrectAnswers++
+    bingoCards.value[game.currentQuestion] = "incorrect";
 
-    bingoCards.value[game.currentQuestion] = 'incorrect'
-
-    feedbackType.value = 'incorrect'
-    feedbackMessage.value = '¡Vaya! Has fallado. Has perdido 5 puntos.'
-
+    feedbackType.value = "incorrect";
+    feedbackMessage.value = "¡Vaya! Has fallado. Has perdido 5 puntos.";
   }
 }
 
-
 function tiempoAgotado() {
+  if (answered.value || finished.value) return;
 
-  if (answered.value || finished.value) return
+  answered.value = true;
 
-  answered.value = true
+  const cancionActual = game.songs[game.currentQuestion];
 
-  const cancionActual = game.songs[game.currentQuestion]
-
-  feedbackType.value = 'timeout'
+  feedbackType.value = "timeout";
   feedbackMessage.value =
-    '¡Se ha acabado el tiempo! La respuesta correcta era: ' +
-    cancionActual.answers[cancionActual.correct]
+    "¡Se ha acabado el tiempo! La respuesta correcta era: " +
+    cancionActual.answers[cancionActual.correct];
 }
 
-
 function guardarResultado() {
-
-  const porcentaje = game.correctAnswers * 10
+  const porcentaje = game.correctAnswers * 10;
 
   const resultado = {
     name: game.playerName,
@@ -240,73 +202,66 @@ function guardarResultado() {
     correctAnswers: game.correctAnswers,
     incorrectAnswers: game.incorrectAnswers,
     percentage: porcentaje,
-    date: new Date().toLocaleDateString()
-  }
+    date: new Date().toLocaleDateString(),
+  };
 
-  let ranking = JSON.parse(localStorage.getItem('ranking')) || []
+  let ranking = JSON.parse(localStorage.getItem("ranking")) || [];
 
-  ranking.push(resultado)
+  ranking.push(resultado);
 
   ranking.sort((a, b) => {
-    return b.score - a.score
-  })
+    return b.score - a.score;
+  });
 
-  ranking = ranking.slice(0, 10)
+  ranking = ranking.slice(0, 10);
 
-  localStorage.setItem('ranking', JSON.stringify(ranking))
+  localStorage.setItem("ranking", JSON.stringify(ranking));
 }
 
-
 function siguientePregunta() {
-
   if (game.currentQuestion === 9) {
+    finished.value = true;
 
-    finished.value = true
-
-    limpiarTemporizadores()
+    limpiarTemporizadores();
 
     if (audio) {
-      audio.stop()
-      audio.unload()
-      audio = null
+      audio.stop();
+      audio.unload();
+      audio = null;
     }
 
-    guardarResultado()
+    guardarResultado();
 
-    router.push('/resultado')
+    router.push("/resultado");
 
-    return
+    return;
   }
 
-  game.currentQuestion++
+  game.currentQuestion++;
 
-  selectedAnswer.value = null
-  answered.value = false
+  selectedAnswer.value = null;
+  answered.value = false;
 
-  feedbackMessage.value = ''
-  feedbackType.value = ''
+  feedbackMessage.value = "";
+  feedbackType.value = "";
 
-  tiempoRestante.value = 10
+  tiempoRestante.value = 10;
 
-  reproducirCancion()
+  reproducirCancion();
 }
 
 onBeforeUnmount(() => {
-
-  limpiarTemporizadores()
+  limpiarTemporizadores();
 
   if (audio) {
-    audio.stop()
-    audio.unload()
-    audio = null
+    audio.stop();
+    audio.unload();
+    audio = null;
   }
-
-})
+});
 </script>
 
 <style scoped>
-
-
 .play {
   width: 100%;
   min-height: 100%;
@@ -458,5 +413,4 @@ onBeforeUnmount(() => {
     grid-row: 4;
   }
 }
-
 </style>

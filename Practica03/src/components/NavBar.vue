@@ -13,7 +13,7 @@
 </template>
 
 <script setup>
-import { RouterLink } from 'vue-router'
+import { RouterLink } from "vue-router";
 </script>
 
 <style scoped>
@@ -27,7 +27,7 @@ import { RouterLink } from 'vue-router'
   padding: 1.25rem 5%;
   box-sizing: border-box;
   background: transparent;
-border-bottom: 2px solid #ffffff; 
+  border-bottom: 2px solid #ffffff;
 }
 
 .logo {
@@ -44,7 +44,9 @@ border-bottom: 2px solid #ffffff;
   height: 20px;
   background: #00f2fe;
   border-radius: 50%;
-  box-shadow: 0 0 10px #00f2fe, 0 0 20px #00f2fe;
+  box-shadow:
+    0 0 10px #00f2fe,
+    0 0 20px #00f2fe;
 }
 
 .links {
@@ -66,8 +68,8 @@ border-bottom: 2px solid #ffffff;
 .links a:hover {
   color: #ffffff;
   text-decoration: underline;
-  text-decoration-thickness: 2px;       
-  text-underline-offset: 5px;            
+  text-decoration-thickness: 2px;
+  text-underline-offset: 5px;
 }
 
 @media (max-width: 600px) {

@@ -1,24 +1,14 @@
 
 <template>
   <section class="ranking-page">
-    <h1>🏆 Ranking Musical</h1>
+    <h1>Ranking Musical</h1>
+    <p class="subtitle"> Los 10 mejores jugadores de Bingo Musical.</p>
 
-    <p class="subtitle">
-      Los 10 mejores jugadores de Bingo Musical.
-    </p>
+    <RankingTable v-if="ranking.length > 0" :ranking="ranking" />
 
-    <RankingTable
-      v-if="ranking.length > 0"
-      :ranking="ranking"
-    />
+    <p v-else class="empty"> Todavía no hay jugadores en el ranking. Puedes ser el primero, date prisa y empieza a jugar a este bingo musical! </p>
 
-    <p v-else class="empty">
-      Todavía no hay jugadores en el ranking. ¡Sé el primero!
-    </p>
-
-    <RouterLink to="/" class="home-link">
-      Volver al inicio
-    </RouterLink>
+    <RouterLink to="/" class="home-link"> Volver al inicio </RouterLink>
   </section>
 </template>
 

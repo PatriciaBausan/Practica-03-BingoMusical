@@ -1,10 +1,3 @@
-<script setup>
-import { RouterLink } from "vue-router";
-import { useGameStore } from "../stores/game";
-
-const game = useGameStore();
-</script>
-
 <template>
   <section class="home">
     <div class="home-content">
@@ -15,15 +8,12 @@ const game = useGameStore();
       <h2>¿Cuánto sabes de música?</h2>
 
       <p class="subtitle">
-        Pon a prueba tu oído musical, escucha canciones y demuestra que eres capaz de reconocerlas.
-        ¡Completa tu cartón y consigue la máxima puntuación!
+        Escucha diferentes canciones, intenta adivinar cuáles son y así poder demostrar cuánto sabes
+        de música. ¡Completa el bingo y consigue la mayor puntuación posible!
       </p>
 
       <div class="buttons">
-        <RouterLink to="/concurso" class="play" @click="game.reset()">
-          ¡Comenzar a jugar!
-        </RouterLink>
-
+        <RouterLink to="/concurso" class="play" @click="game.reset()"> Empieza a jugar </RouterLink>
         <RouterLink to="/ranking" class="ranking"> Ver ranking </RouterLink>
       </div>
     </div>
@@ -34,8 +24,14 @@ const game = useGameStore();
   </section>
 </template>
 
-<style scoped>
+<script setup>
+import { RouterLink } from "vue-router";
+import { useGameStore } from "../stores/game";
 
+const game = useGameStore();
+</script>
+
+<style scoped>
 .home {
   width: 100%;
   min-height: 75vh;
@@ -197,5 +193,4 @@ const game = useGameStore();
     font-size: 2.8rem;
   }
 }
-
 </style>

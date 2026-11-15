@@ -1,8 +1,3 @@
-
-<script setup>
-defineProps(['ranking'])
-</script>
-
 <template>
   <div class="ranking-card">
     <table>
@@ -17,10 +12,7 @@ defineProps(['ranking'])
       </thead>
 
       <tbody>
-        <tr
-          v-for="(jugador, index) in ranking"
-          :key="index"
-        >
+        <tr v-for="(jugador, index) in ranking" :key="index">
           <td>
             <span v-if="index === 0">👑</span>
             <span v-else-if="index === 1">🥈</span>
@@ -37,6 +29,10 @@ defineProps(['ranking'])
     </table>
   </div>
 </template>
+
+<script setup>
+defineProps(["ranking"]);
+</script>
 
 <style scoped>
 .ranking-card {

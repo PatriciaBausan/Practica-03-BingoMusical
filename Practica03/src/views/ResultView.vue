@@ -1,28 +1,7 @@
 
-<script setup>
-import { RouterLink } from 'vue-router'
-import { useGameStore } from '../stores/game'
-
-const game = useGameStore()
-
-const porcentaje = game.correctAnswers * 10
-
-function mensajeFinal() {
-  if (porcentaje === 100) {
-    return '¡Increíble! ¡Has conseguido todas las respuestas!'
-  } else if (porcentaje >= 70) {
-    return '¡Muy bien! Tienes un gran oído musical.'
-  } else if (porcentaje >= 40) {
-    return '¡Buen intento! Sigue practicando.'
-  } else {
-    return '¡No te rindas! La próxima partida será mejor.'
-  }
-}
-</script>
-
 <template>
   <section class="result">
-    <h1>¡Partida terminada!</h1>
+    <h1>Partida terminada</h1>
 
     <p class="subtitle">
       {{ mensajeFinal() }}
@@ -53,6 +32,27 @@ function mensajeFinal() {
     </div>
   </section>
 </template>
+
+<script setup>
+import { RouterLink } from 'vue-router'
+import { useGameStore } from '../stores/game'
+
+const game = useGameStore()
+
+const porcentaje = game.correctAnswers * 10
+
+function mensajeFinal() {
+  if (porcentaje === 100) {
+    return 'ENHORABUENA! Has acertado todas las canciones'
+  } else if (porcentaje >= 70) {
+    return 'MUY BIEN! Tienes una gran base musical sobre estas canciones'
+  } else if (porcentaje >= 40) {
+    return 'BUEN INTENTO! Sigue practicando, para poder acertar todas las canciones'
+  } else {
+    return 'UPSS, LA PRÓXIMA IRÁ MEJOR! vuelve a intentarlo'
+  }
+}
+</script>
 
 <style scoped>
 .result {
@@ -108,15 +108,15 @@ function mensajeFinal() {
   border-radius: 10px;
   text-decoration: none;
   font-weight: bold;
+  color: white;
+  background: linear-gradient(90deg, #9333ea, #2563eb);
+  box-shadow: 0 0 15px rgba(147, 51, 234, 0.4);
+  transition: all 0.25s ease;
 }
 
-.play {
-  background: #a855f7;
-  color: white;
-}
-
-.ranking {
-  background: #2563eb;
-  color: white;
+.play:hover,
+.ranking:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 0 25px #a855f7;
 }
 </style>
