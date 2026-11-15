@@ -8,8 +8,6 @@ El objetivo del juego es escuchar cada canción y seleccionar la respuesta corre
 
 La partida consta de 10 preguntas. Al finalizar, se muestra el resultado del jugador y se guarda su puntuación en un ranking.
 
-El proyecto está desarrollado como una SPA (*Single Page Application*), es decir, una aplicación que permite navegar entre diferentes pantallas sin tener que recargar toda la página.
-
 ## 2. Tecnologías utilizadas
 
 - **HTML5:** estructura de la aplicación.
