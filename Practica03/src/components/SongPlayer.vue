@@ -1,13 +1,16 @@
 <template>
-  <div class="song-player">
-    <p>Escucha atentamente el fragmento musical.</p>
-  </div>
+  <div class="song-player"></div>
 </template>
 
 <script setup>
 import { Howl } from "howler";
 
-const props = defineProps(["song"]);
+const props = defineProps({
+  song: {
+    type: Object,
+    required: true,
+  },
+});
 
 const emit = defineEmits(["finished", "error"]);
 
@@ -19,28 +22,33 @@ function reproducirCancion() {
 
   if (!props.song) return;
 
-  audio = new Howl({
+  const sonido = new Howl({
     src: [props.song.file],
     html5: true,
 
     onload: () => {
-      const duracion = audio.duration();
+      const duracion = sonido.duration();
 
       const inicioMinimo = 20;
       const inicioMaximo = Math.max(0, duracion - 30 - 5);
 
-      const inicio =
-        inicioMaximo > inicioMinimo
-          ? inicioMinimo + Math.random() * (inicioMaximo - inicioMinimo)
-          : 0;
+      let inicio = 0;
 
-      const id = audio.play();
-      
-      audio.seek(inicio, id);
+      if (inicioMaximo > inicioMinimo) {
+        inicio = inicioMinimo + Math.random() * (inicioMaximo - inicioMinimo);
+      }
+
+      const id = sonido.play();
+
+      sonido.seek(inicio, id);
+
       stopTimer = setTimeout(() => {
-        if (audio) {
-          audio.stop(id);
+        if (audio === sonido) {
+          sonido.stop(id);
+          audio = null;
+          sonido.unload();
         }
+
         stopTimer = null;
         emit("finished");
       }, 5000);
@@ -50,6 +58,8 @@ function reproducirCancion() {
       emit("error");
     },
   });
+
+  audio = sonido;
 }
 
 function detenerCancion() {
@@ -73,8 +83,6 @@ defineExpose({
 
 <style scoped>
 .song-player {
-  text-align: center;
-  color: #d1d5db;
-  margin: 15px 0;
+  display: none;
 }
 </style>

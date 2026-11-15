@@ -10,7 +10,9 @@
       </div>
     </div>
 
-    <div class="bingo-container"> <BingoCard :bingo-cards="bingoCards" /></div>
+    <div class="bingo-container">
+      <BingoCard :bingo-cards="bingoCards" />
+    </div>
 
     <div class="game-container">
       <MusicCard
@@ -30,23 +32,32 @@
         {{ game.currentQuestion === 9 ? "Ver resultado" : "Siguiente pregunta" }}
       </button>
     </div>
+
+    <SongPlayer
+      ref="songPlayer"
+      :song="game.songs[game.currentQuestion]"
+      @finished="iniciarTiempo"
+      @error="manejarErrorAudio"
+    />
   </section>
 </template>
 
 <script setup>
-import { ref, onMounted, onBeforeUnmount } from "vue";
+import { ref, onMounted, onBeforeUnmount, nextTick } from "vue";
 import { useRouter } from "vue-router";
-import { Howl } from "howler";
 
 import MusicCard from "../components/MusicCard.vue";
 import BingoCard from "../components/BingoCard.vue";
 import GameFeedback from "../components/GameFeedback.vue";
+import SongPlayer from "../components/SongPlayer.vue";
 
 import { songs } from "../data/songs";
 import { useGameStore } from "../stores/game";
 
 const game = useGameStore();
 const router = useRouter();
+
+const songPlayer = ref(null);
 
 const selectedAnswer = ref(null);
 const answered = ref(false);
@@ -59,11 +70,9 @@ const tiempoRestante = ref(10);
 
 const bingoCards = ref([]);
 
-let audio = null;
-let stopTimer = null;
 let countdownTimer = null;
 
-onMounted(() => {
+onMounted(async () => {
   const cancionesMezcladas = [...songs];
 
   cancionesMezcladas.sort(() => Math.random() - 0.5);
@@ -72,58 +81,23 @@ onMounted(() => {
 
   bingoCards.value = Array(10).fill("pending");
 
+  await nextTick();
+
   reproducirCancion();
 });
 
 function reproducirCancion() {
-  if (audio) {
-    audio.stop();
-    audio.unload();
-    audio = null;
-  }
-
   limpiarTemporizadores();
 
-  const cancionActual = game.songs[game.currentQuestion];
-
-  if (!cancionActual) return;
-
-  audio = new Howl({
-    src: [cancionActual.file],
-    html5: true,
-
-    onload: () => {
-      const duracion = audio.duration();
-
-      const inicioMinimo = duracion >= 25 ? 20 : Math.max(0, duracion - 5);
-
-      const inicioMaximo = Math.max(inicioMinimo, duracion - 5);
-
-      const inicio = inicioMinimo + Math.random() * (inicioMaximo - inicioMinimo);
-
-      const id = audio.play();
-
-      audio.seek(inicio, id);
-
-      stopTimer = setTimeout(() => {
-        if (audio) {
-          audio.stop(id);
-        }
-
-        stopTimer = null;
-
-        iniciarTiempo();
-      }, 5000);
-    },
-
-    onloaderror: () => {
-      console.log("Error al cargar la canción:", cancionActual.file);
-    },
-  });
+  songPlayer.value?.reproducirCancion();
 }
 
 function iniciarTiempo() {
+  if (answered.value || finished.value) return;
+
   tiempoRestante.value = 10;
+
+  limpiarTemporizadores();
 
   countdownTimer = setInterval(() => {
     tiempoRestante.value--;
@@ -135,12 +109,13 @@ function iniciarTiempo() {
   }, 1000);
 }
 
-function limpiarTemporizadores() {
-  if (stopTimer) {
-    clearTimeout(stopTimer);
-    stopTimer = null;
-  }
+function manejarErrorAudio() {
+  console.log("Error al cargar la canción");
 
+  iniciarTiempo();
+}
+
+function limpiarTemporizadores() {
   if (countdownTimer) {
     clearInterval(countdownTimer);
     countdownTimer = null;
@@ -152,9 +127,7 @@ function comprobarRespuesta(index) {
 
   limpiarTemporizadores();
 
-  if (audio) {
-    audio.stop();
-  }
+  songPlayer.value?.detenerCancion();
 
   selectedAnswer.value = index;
   answered.value = true;
@@ -218,17 +191,13 @@ function guardarResultado() {
   localStorage.setItem("ranking", JSON.stringify(ranking));
 }
 
-function siguientePregunta() {
+async function siguientePregunta() {
   if (game.currentQuestion === 9) {
     finished.value = true;
 
     limpiarTemporizadores();
 
-    if (audio) {
-      audio.stop();
-      audio.unload();
-      audio = null;
-    }
+    songPlayer.value?.detenerCancion();
 
     guardarResultado();
 
@@ -247,17 +216,15 @@ function siguientePregunta() {
 
   tiempoRestante.value = 10;
 
+  await nextTick();
+
   reproducirCancion();
 }
 
 onBeforeUnmount(() => {
   limpiarTemporizadores();
 
-  if (audio) {
-    audio.stop();
-    audio.unload();
-    audio = null;
-  }
+  songPlayer.value?.detenerCancion();
 });
 </script>
 
